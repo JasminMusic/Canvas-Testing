@@ -1,0 +1,9 @@
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+package-lock.json
+test-report.xml
+api/google_service_key.json
+
