@@ -44,13 +44,13 @@ export async function getColorDifference(colorA: string, colorB: string) {
 
   return diff(
     rgb_to_lab({ R: a.r, G: a.g, B: a.b }),
-    rgb_to_lab({ R: b.r, G: b.g, B: b.b }),
+    rgb_to_lab({ R: b.r, G: b.g, B: b.b })
   );
 }
 
 export async function areTheseColorsVisuallyTheSame(
   colorA: string,
-  colorB: string,
+  colorB: string
 ) {
   const diff = await getColorDifference(colorA, colorB);
   return diff <= 2;

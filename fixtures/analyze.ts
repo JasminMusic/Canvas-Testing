@@ -2,7 +2,7 @@ import { expect, Locator, Page } from '@playwright/test';
 import { createWorker } from 'tesseract.js';
 import { ImageAnnotatorClient } from '@google-cloud/vision';
 
-import { getColorDifference, rgbToHex } from './colors'
+import { getColorDifference, rgbToHex } from './colors';
 
 const client = new ImageAnnotatorClient();
 
@@ -19,13 +19,13 @@ export interface ImageLabel {
  * @param OnlyHighestProbability - If true, we will only check the highest probability label, if false, we will check all labels
  */
 export async function extractLabelsFromImage(
-  image: Buffer,
+  image: Buffer
 ): Promise<ImageLabel[]> {
   const [result] = await client.labelDetection(image);
   const labels = result.labelAnnotations || [];
 
   const filteredLabels = labels.filter(
-    (label): label is { description: string; score: number } => !!label.score,
+    (label): label is { description: string; score: number } => !!label.score
   );
 
   filteredLabels.sort((a, b) => b.score - a.score);
@@ -42,7 +42,7 @@ export async function extractLabelsFromImage(
 export async function assertImageContainsLabels(
   image: Buffer,
   expectedLabels: string[],
-  onlyHighestProbability = false,
+  onlyHighestProbability = false
 ): Promise<void> {
   const labels = await extractLabelsFromImage(image);
 
@@ -64,14 +64,13 @@ export async function assertImageContainsLabels(
  * @param G - The green value of the color we want to check
  * @param B - The blue value of the color we want to check
  */
-
 export async function analyzeElementCornerScreenshots(
   page: Page,
   size: number,
   locator: Locator,
   R: number,
   G: number,
-  B: number,
+  B: number
 ): Promise<void> {
   const cornerSize = size; // in pixels
 
@@ -147,8 +146,8 @@ export async function analyzeElementCornerScreenshots(
       rgbToHex(
         colorToCheck?.red || 0,
         colorToCheck?.green || 0,
-        colorToCheck?.blue || 0,
-      ),
+        colorToCheck?.blue || 0
+      )
     );
 
     expect(colorDifference).toBeLessThan(2);
@@ -188,7 +187,7 @@ export async function extractTextWithGoogleVision(element: Locator) {
 export async function ocrWithGoogleVision(
   locator: Locator,
   text: string,
-  noText?: boolean,
+  noText?: boolean
 ) {
   await locator.waitFor();
 
@@ -205,7 +204,7 @@ export async function ocrWithGoogleVision(
     // If noText is true, throw an error if any text is found in the screenshot
     if (fullTextAnnotation && fullTextAnnotation.text) {
       throw new Error(
-        `Text detected in the image but noText flag was set. Annotations: ${fullTextAnnotation.text}`,
+        `Text detected in the image but noText flag was set. Annotations: ${fullTextAnnotation.text}`
       );
     }
   } else {
@@ -214,14 +213,14 @@ export async function ocrWithGoogleVision(
       throw new Error('No text detected in the image');
     }
     expect(fullTextAnnotation.text?.toLowerCase()).toContain(
-      text.toLowerCase(),
+      text.toLowerCase()
     );
   }
 }
 
 // This function will detect the dominant color of an element on the page
 export async function detectElementDominantColor(
-  locator: Locator,
+  locator: Locator
 ): Promise<string> {
   // Capture the element's screenshot
   await locator.waitFor();
@@ -278,7 +277,7 @@ export async function detectTextFromElement(locator: Locator): Promise<string> {
  * @param image - The image buffer to analyze
  */
 export async function extractLogosFromImage(
-  image: Buffer,
+  image: Buffer
 ): Promise<{ description: string; score: number }[]> {
   const [result] = await client.logoDetection({ image: { content: image } });
   const logos = result.logoAnnotations || [];
@@ -289,7 +288,7 @@ export async function extractLogosFromImage(
         logo.description !== null &&
         logo.description !== undefined &&
         logo.score !== null &&
-        logo.score !== undefined,
+        logo.score !== undefined
     )
     .map(logo => ({
       description: logo.description as string,
@@ -304,7 +303,7 @@ export async function extractLogosFromImage(
  */
 export async function assertImageContainsLogos(
   image: Buffer,
-  expectedLogos: string[],
+  expectedLogos: string[]
 ): Promise<void> {
   const logos = await extractLogosFromImage(image);
   const logoDescriptions = logos.map(logo => logo.description);

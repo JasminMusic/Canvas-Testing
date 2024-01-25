@@ -8,7 +8,7 @@ import { Locator, expect } from '@playwright/test';
 export async function diffScreenshots(
   screenshotA: Buffer,
   screenshotB: Buffer,
-  ignoreSizeDifference = false,
+  ignoreSizeDifference = false
 ) {
   const oldPNG = PNG.sync.read(screenshotA);
   const newPNG = PNG.sync.read(screenshotB);
@@ -26,7 +26,7 @@ export async function diffScreenshots(
     newPNG.data,
     null,
     oldPNG.width,
-    oldPNG.height,
+    oldPNG.height
   );
 
   return diff;
@@ -57,7 +57,7 @@ export function loadReferenceScreenshot(filename: string): Buffer {
 export function compareScreenshots(
   img1: Buffer,
   img2: Buffer,
-  threshold = 0.1,
+  threshold = 0.1
 ): number {
   const png1 = PNG.sync.read(img1);
   const png2 = PNG.sync.read(img2);
@@ -71,7 +71,7 @@ export function compareScreenshots(
     diff.data,
     width,
     height,
-    { threshold },
+    { threshold }
   );
 
   if (numDiffPixels > 0) {
@@ -91,7 +91,7 @@ export async function takeElementScreenshot(element: Locator) {
 export async function compareElementScreenshot(
   element: Locator,
   filename: string,
-  thresholdValue = 0.2, // No type annotation needed
+  thresholdValue = 0.2 // No type annotation needed
 ) {
   await expect(element).toHaveScreenshot(filename, {
     threshold: thresholdValue,
